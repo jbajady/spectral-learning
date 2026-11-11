@@ -1,0 +1,54 @@
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Environment variables and secrets
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/
+
+# Operating system
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build files
+build/
+dist/
+*.egg-info/
+
+# Python environments
+.python-version
+
+# Generated images and plots (if reproducible)
+# Uncomment if you don't want to track generated plots
+# *.png
+# *.jpg
+
+# Generated data (if reproducible)
+# Uncomment if data should not be committed
+# data/
+
+# Temporary files
+*.tmp
+*.bak
