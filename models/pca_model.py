@@ -1,25 +1,56 @@
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
-from sklearn.datasets import load_iris
-import matplotlib.pyplot as plt
+import numpy as np
 
+class PCA:
+    def __init__(self, n_components):
+        self.n_components = n_components
+        self.components = None
+        self.mean = None
 
-iris = load_iris()
-X = iris.data
-y = iris.target
+    def fit(self, X):
+        # Center the data
+        self.mean = np.mean(X, axis=0)
+        X_centered = X - self.mean
+        
+        # Compute covariance matrix
+        cov_matrix = np.cov(X_centered, rowvar=False)
+        
+        # Compute eigenvalues and eigenvectors
+        eigenvalues, eigenvectors = np.linalg.eigh(cov_matrix)
+        
+        # Sort eigenvalues and corresponding eigenvectors in descending order
+        sorted_indices = np.argsort(eigenvalues)[::-1]
+        sorted_eigenvalues = eigenvalues[sorted_indices]
+        sorted_eigenvectors = eigenvectors[:, sorted_indices]
+        
+        # Select the top n_components
+        self.components = sorted_eigenvectors[:, :self.n_components]
 
-scaler=StandardScaler()
-X_std = scaler.fit_transform(X)
+    def transform(self, X):
+        X_centered = X - self.mean
+        
+        # Project the data onto the principal components
+        return np.dot(X_centered, self.components)
 
-pca = PCA(n_components=2)
-X_pca_sklearn = pca.fit_transform(X_std)
-print(y)
+    def fit_transform(self, X):
+        self.fit(X)
+        return self.transform(X)
 
-plt.figure(figsize=(8, 6))
-scatter = plt.scatter(X_pca_sklearn[:, 0], X_pca_sklearn[:, 1], c=y, cmap='viridis')
-plt.colorbar(scatter)
-plt.xlabel('First Principal Component')
-plt.ylabel('Second Principal Component')
-plt.title('PCA of Iris Dataset (scikit-learn)')
-plt.show()
-
+    
+    def evaluation_variance_explained(self, X):
+        # Center the data
+        X_centered = X - self.mean
+        
+        # Compute covariance matrix
+        cov_matrix = np.cov(X_centered, rowvar=False)
+        
+        # Compute eigenvalues
+        eigenvalues, _ = np.linalg.eigh(cov_matrix)
+        
+        # Sort eigenvalues in descending order
+        sorted_eigenvalues = np.sort(eigenvalues)[::-1]
+        
+        # Calculate the variance explained by each principal component
+        total_variance = np.sum(sorted_eigenvalues)
+        explained_variance = sorted_eigenvalues / total_variance
+        
+        return explained_variance[:self.n_components]
